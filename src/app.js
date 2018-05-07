@@ -6,6 +6,7 @@ const promisify = require('util').promisify;
 const handlebars = require('handlebars');
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
+const mimeType = require('./config/mimeType');
 /*eslint no-undef: "off"*/
 const tplPath = path.join(__dirname, './template/temp.tpl');
 const source = fs.readFileSync(tplPath);
@@ -18,7 +19,8 @@ const server = http.createServer(async (req, res) => {
     const st = await stat(filePath);
     if (st.isFile()) {
       res.statusCode = 200;
-      res.setHeader('Content-Type' ,'text/plain');
+      const contentType = mimeType(filePath);
+      res.setHeader('Content-Type' ,contentType);
       fs.createReadStream(filePath).pipe(res);
     } else if (st.isDirectory()) {
       const files = await readdir(filePath);
