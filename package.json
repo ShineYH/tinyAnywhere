@@ -1,0 +1,35 @@
+{
+  "name": "tinyanywhere",
+  "version": "1.0.0",
+  "description": "tiny nodejs static web server",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "fix": "eslint --fix ."
+  },
+  "pre-commit": [
+    "fix",
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShineYH/tinyAnywhere.git"
+  },
+  "author": "syh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShineYH/tinyAnywhere/issues"
+  },
+  "homepage": "https://github.com/ShineYH/tinyAnywhere#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
+    "pre-commit": "^1.2.2"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "handlebars": "^4.0.11",
+    "supervisor": "^0.12.0"
+  }
+}
