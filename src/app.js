@@ -7,7 +7,8 @@ const handlebars = require('handlebars');
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const mimeType = require('./config/mimeType');
-/*eslint no-undef: "off"*/
+const compress = require('./config/compress');
+/* eslint-disable-next-line */
 const tplPath = path.join(__dirname, './template/temp.tpl');
 const source = fs.readFileSync(tplPath);
 const template = handlebars.compile(source.toString());
@@ -21,7 +22,11 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 200;
       const contentType = mimeType(filePath);
       res.setHeader('Content-Type' ,contentType);
-      fs.createReadStream(filePath).pipe(res);
+      let rs = fs.createReadStream(filePath);
+      if (filePath.match(conf.compress)) {
+        rs = compress(rs, req, res);
+      }
+      rs.pipe(res);
     } else if (st.isDirectory()) {
       const files = await readdir(filePath);
       res.statusCode = 200;
@@ -44,7 +49,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(conf.port , conf.hostname , () => {
   const url = `http://${conf.hostname}:${conf.port}`;
-  /* eslint-disable-next-line */
   console.info(`server started at ${url}`);
 });
 
