@@ -8,6 +8,7 @@ const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const mimeType = require('./config/mimeType');
 const compress = require('./config/compress');
+const isCache = require('./config/cache');
 /* eslint-disable-next-line */
 const tplPath = path.join(__dirname, './template/temp.tpl');
 const source = fs.readFileSync(tplPath);
@@ -22,6 +23,11 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 200;
       const contentType = mimeType(filePath);
       res.setHeader('Content-Type' ,contentType);
+      if (isCache(st, req, res)) {
+        res.statusCode = 304;
+        res.end();
+        return;
+      }
       let rs = fs.createReadStream(filePath);
       if (filePath.match(conf.compress)) {
         rs = compress(rs, req, res);
